@@ -70,3 +70,97 @@ The trained model is stored at:
 
 ```text
 models/best.pt
+The trained model is stored at:
+
+```text
+models/best.pt
+```
+
+The model is loaded automatically by the Flask application during startup.
+
+## How to Run
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/divanshu989/RDD2022-Road-Damage-Detection.git
+cd RDD2022-Road-Damage-Detection
+```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Start the application
+
+```bash
+python app.py
+```
+
+### 4. Open the application
+
+Open the following address in your browser:
+
+```text
+http://127.0.0.1:5000
+```
+
+## Detection Workflow
+
+```text
+Road Image
+     ↓
+Image Upload
+     ↓
+Flask Application
+     ↓
+YOLO11 Model
+     ↓
+Road Damage Detection
+     ↓
+Bounding Boxes + Confidence Scores
+     ↓
+Detection Report
+```
+
+## Project Structure
+
+```text
+RDD2022-Road-Damage-Detection/
+│
+├── app.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── models/
+│   └── best.pt
+│
+├── src/
+│   ├── balance_dataset.py
+│   ├── convert_rdd_to_yolo.py
+│   ├── predict.py
+│   ├── train.py
+│   └── validate.py
+│
+├── static/
+│   └── style.css
+│
+└── templates/
+    ├── index.html
+    └── report.html
+```
+
+## Limitations
+
+Detection results may vary depending on image quality, lighting, camera angle, and visibility of road damage.
+
+## Disclaimer
+
+This project is intended for educational and demonstration purposes.
+
+## Author
+
+**Divanshu**
