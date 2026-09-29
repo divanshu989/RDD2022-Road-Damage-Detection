@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RDD2022 | Road Damage Intelligence</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: linear-gradient(135deg, #14213d, #1d3557);
+            color: white;
+            padding: 24px 7%;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: .3px;
+        }
+
+        .badge {
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.2);
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            background: linear-gradient(135deg, #14213d, #1d3557);
+            color: white;
+            padding: 65px 7% 85px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 5vw, 58px);
+            line-height: 1.1;
+            margin-bottom: 18px;
+        }
+
+        .hero p {
+            font-size: 19px;
+            opacity: .85;
+            max-width: 760px;
+            margin: auto;
+        }
+
+        .hero-tags {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hero-tags span {
+            padding: 7px 14px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.15);
+            font-size: 13px;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .container {
+            width: 86%;
+            max-width: 1250px;
+            margin: -45px auto 60px;
+            position: relative;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(20,33,61,.08);
+            border: 1px solid #e8edf4;
+        }
+
+        /* =========================
+           UPLOAD
+        ========================= */
+
+        .upload-card {
+            padding: 38px;
+        }
+
+        .section-title {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            color: #65748b;
+            margin-bottom: 25px;
+        }
+
+        .upload-box {
+            border: 2px dashed #aebdd1;
+            border-radius: 16px;
+            padding: 42px 25px;
+            text-align: center;
+            background: #f9fbfd;
+            transition: .2s;
+        }
+
+        .upload-box:hover {
+            border-color: #2f66f3;
+            background: #f5f8ff;
+        }
+
+        .upload-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .upload-box h3 {
+            font-size: 19px;
+            margin-bottom: 6px;
+        }
+
+        .upload-box p {
+            color: #718096;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .choose-btn {
+            display: inline-block;
+            background: #edf3ff;
+            color: #2456d6;
+            padding: 11px 20px;
+            border-radius: 9px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .file-name {
+            margin-top: 15px;
+            color: #516174;
+            font-size: 14px;
+        }
+
+        .detect-btn {
+            margin-top: 22px;
+            border: none;
+            background: linear-gradient(135deg, #2563eb, #1749c7);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 7px 18px rgba(37,99,235,.25);
+            transition: .2s;
+        }
+
+        .detect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(37,99,235,.32);
+        }
+
+        .detect-btn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* =========================
+           PREVIEW
+        ========================= */
+
+        #preview-container {
+            display: none;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        #preview {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 12px;
+            border: 1px solid #dce3ed;
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        #loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border: 4px solid #dce5f4;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto auto 12px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        #error {
+            display: none;
+            background: #fff1f2;
+            color: #be123c;
+            border: 1px solid #fecdd3;
+            padding: 14px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* =========================
+           RESULTS
+        ========================= */
+
+        #results {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .results-header {
+            margin-bottom: 20px;
+        }
+
+        .results-header h2 {
+            font-size: 30px;
+        }
+
+        .results-header p {
+            color: #68778c;
+        }
+
+        /* =========================
+           METRICS
+        ========================= */
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .metric {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 18px rgba(20,33,61,.04);
+        }
+
+        .metric-label {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #17213a;
+        }
+
+        /* =========================
+           IMAGE COMPARISON
+        ========================= */
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .image-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #e5eaf1;
+        }
+
+        .image-card h3 {
+            margin-bottom: 14px;
+            font-size: 18px;
+        }
+
+        .result-image {
+            width: 100%;
+            border-radius: 10px;
+            display: block;
+            background: #eef2f7;
+        }
+
+        /* =========================
+           DETECTIONS
+        ========================= */
+
+        .detections-card {
+            padding: 28px;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5eaf1;
+        }
+
+        .detections-card h2 {
+            margin-bottom: 18px;
+        }
+
+        .detection-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .detection {
+            border: 1px solid #e1e7ef;
+            border-radius: 12px;
+            padding: 18px;
+            background: #fbfcfe;
+        }
+
+        .detection-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .class-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .confidence {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .description {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .bar {
+            height: 7px;
+            background: #e7edf5;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            border-radius: 10px;
+        }
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 9px;
+            font-weight: 700;
+            background: #17213a;
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: #edf2f8;
+            color: #26364e;
+        }
+
+        /* =========================
+           INFO
+        ========================= */
+
+        .info-section {
+            margin-top: 30px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #e5eaf1;
+        }
+
+        .info-icon {
+            font-size: 27px;
+            margin-bottom: 12px;
+        }
+
+        .info-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .info-card p {
+            color: #69788d;
+            font-size: 14px;
+        }
+
+        /* =========================
+           CLASSES
+        ========================= */
+
+        .classes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .class-tag {
+            background: #edf3ff;
+            color: #2456d6;
+            border-radius: 7px;
+            padding: 5px 9px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+            color: #758399;
+            padding: 30px 20px;
+            font-size: 13px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media(max-width: 850px) {
+
+            .metrics,
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detection-list {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .upload-card {
+                padding: 25px;
+            }
+
+            .nav {
+                gap: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div class="nav">
+
+        <div class="brand">
+            RDD2022
+        </div>
+
+        <div class="badge">
+            YOLO11 • Computer Vision
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <h1>Road Damage Intelligence</h1>
+
+    <p>
+        AI-powered road damage detection using the RDD2022 dataset
+        and YOLO11 object detection.
+    </p>
+
+    <div class="hero-tags">
+
+        <span>9 Damage Classes</span>
+        <span>Object Detection</span>
+        <span>YOLO11</span>
+        <span>Computer Vision</span>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="container">
+
+
+    <!-- UPLOAD -->
+
+    <section class="card upload-card">
+
+        <h2 class="section-title">
+            Detect Road Damage
+        </h2>
+
+        <p class="section-subtitle">
+            Upload a road image and the trained YOLO11 model
+            will identify visible road damage.
+        </p>
+
+
+        <form
+            id="upload-form"
+            enctype="multipart/form-data"
+        >
+
+            <div class="upload-box">
+
+                <div class="upload-icon">
+                    🛣️
+                </div>
+
+                <h3>
+                    Select a road image
+                </h3>
+
+                <p>
+                    JPG, JPEG or PNG • Maximum 20 MB
+                </p>
+
+
+                <label
+                    for="image"
+                    class="choose-btn"
+                >
+                    Choose Image
+                </label>
+
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/png,image/jpeg,image/jpg"
+                    required
+                >
+
+                <div
+                    class="file-name"
+                    id="file-name"
+                >
+                    No image selected
+                </div>
+
+
+                <div id="preview-container">
+
+                    <img
+                        id="preview"
+                        alt="Selected road image"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="detect-btn"
+                    id="detect-btn"
+                >
+                    Detect Road Damage
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div id="loading">
+
+            <div class="spinner"></div>
+
+            <strong>
+                Analyzing road image...
+            </strong>
+
+            <p>
+                YOLO11 is detecting road damage.
+            </p>
+
+        </div>
+
+
+        <div id="error"></div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+
+    <section id="results">
+
+        <div class="results-header">
+
+            <h2>
+                Detection Results
+            </h2>
+
+            <p>
+                AI-generated road damage analysis
+            </p>
+
+        </div>
+
+
+        <!-- METRICS -->
+
+        <div class="metrics">
+
+            <div class="metric">
+
+                <div class="metric-label">
+                    Total Damage Instances
+                </div>
+
+                <div
+                    class="metric-value"
+                    id="total"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="metric">
+
+                <div class="metric-label">
+                    Damage Types
+                </div>
+
+                <div
+                    class="metric-value"
+                    id="types"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="metric">
+
+                <div class="metric-label">
+                    Average Confidence
+                </div>
+
+                <div
+                    class="metric-value"
+                    id="avg"
+                >
+                    0%
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- IMAGE COMPARISON -->
+
+        <div class="image-grid">
+
+            <div class="image-card">
+
+                <h3>
+                    Original Image
+                </h3>
+
+                <img
+                    id="original-image"
+                    class="result-image"
+                    alt="Original road image"
+                >
+
+            </div>
+
+
+            <div class="image-card">
+
+                <h3>
+                    Detected Damage
+                </h3>
+
+                <img
+                    id="result-image"
+                    class="result-image"
+                    alt="Road damage detection result"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- DETECTIONS -->
+
+        <div class="detections-card">
+
+            <h2>
+                Detected Damage
+            </h2>
+
+            <div
+                class="detection-list"
+                id="detection-list"
+            ></div>
+
+
+            <div class="actions">
+
+                <a
+                    id="download-btn"
+                    class="action-btn"
+                    href="#"
+                >
+                    Download CSV Report
+                </a>
+
+                <a
+                    id="report-btn"
+                    class="action-btn secondary"
+                    href="#"
+                    target="_blank"
+                >
+                    View Detailed Report
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROJECT INFORMATION -->
+
+    <section class="info-section">
+
+        <h2 class="section-title">
+            About the System
+        </h2>
+
+        <p class="section-subtitle">
+            Basic information about the technology behind this project.
+        </p>
+
+
+        <div class="info-grid">
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    YOLO11
+                </h3>
+
+                <p>
+                    The system uses a trained YOLO11 object detection
+                    model to locate and classify road damage directly
+                    within an image.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    🗂️
+                </div>
+
+                <h3>
+                    RDD2022 Dataset
+                </h3>
+
+                <p>
+                    The model was developed using road images and
+                    annotations from the RDD2022 road damage detection
+                    dataset.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    🎯
+                </div>
+
+                <h3>
+                    Object Detection
+                </h3>
+
+                <p>
+                    Unlike simple image classification, the system
+                    identifies both the type and approximate location
+                    of damage using bounding boxes.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- DAMAGE CLASSES -->
+
+        <div
+            class="card"
+            style="margin-top:18px;padding:25px;"
+        >
+
+            <h3>
+                Supported Damage Classes
+            </h3>
+
+            <p
+                style="color:#69788d;margin-top:5px;"
+            >
+                The trained model contains nine RDD2022 classes.
+            </p>
+
+            <div class="classes">
+
+                <span class="class-tag">D00</span>
+                <span class="class-tag">D01</span>
+                <span class="class-tag">D10</span>
+                <span class="class-tag">D11</span>
+                <span class="class-tag">D20</span>
+                <span class="class-tag">D40</span>
+                <span class="class-tag">D43</span>
+                <span class="class-tag">D44</span>
+                <span class="class-tag">D50</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- HOW IT WORKS -->
+
+        <div
+            class="card"
+            style="margin-top:18px;padding:25px;"
+        >
+
+            <h3>
+                How It Works
+            </h3>
+
+            <div
+                style="
+                    display:grid;
+                    grid-template-columns:repeat(4,1fr);
+                    gap:20px;
+                    margin-top:20px;
+                "
+            >
+
+                <div>
+                    <strong>01 · Upload</strong>
+                    <p style="color:#69788d;font-size:14px;">
+                        Select a road image.
+                    </p>
+                </div>
+
+                <div>
+                    <strong>02 · Inference</strong>
+                    <p style="color:#69788d;font-size:14px;">
+                        YOLO11 processes the image.
+                    </p>
+                </div>
+
+                <div>
+                    <strong>03 · Detection</strong>
+                    <p style="color:#69788d;font-size:14px;">
+                        Damage is located and classified.
+                    </p>
+                </div>
+
+                <div>
+                    <strong>04 · Report</strong>
+                    <p style="color:#69788d;font-size:14px;">
+                        Results and confidence scores are displayed.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    RDD2022 Road Damage Intelligence
+    <br>
+    YOLO11 • Computer Vision • Flask
+
+</footer>
+
+
+<script>
+
+
+// ============================================================
+// FILE PREVIEW
+// ============================================================
+
+const imageInput =
+    document.getElementById("image");
+
+const fileName =
+    document.getElementById("file-name");
+
+const preview =
+    document.getElementById("preview");
+
+const previewContainer =
+    document.getElementById("preview-container");
+
+
+imageInput.addEventListener(
+    "change",
+    function() {
+
+        const file = this.files[0];
+
+        if (!file) {
+
+            fileName.textContent =
+                "No image selected";
+
+            previewContainer.style.display =
+                "none";
+
+            return;
+        }
+
+
+        fileName.textContent =
+            file.name;
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function(e) {
+
+                preview.src =
+                    e.target.result;
+
+                previewContainer.style.display =
+                    "block";
+            };
+
+
+        reader.readAsDataURL(file);
+
+    }
+);
+
+
+// ============================================================
+// FORM SUBMISSION
+// ============================================================
+
+const form =
+    document.getElementById("upload-form");
+
+const button =
+    document.getElementById("detect-btn");
+
+const loading =
+    document.getElementById("loading");
+
+const errorBox =
+    document.getElementById("error");
+
+const results =
+    document.getElementById("results");
+
+
+form.addEventListener(
+    "submit",
+    async function(e) {
+
+        e.preventDefault();
+
+
+        const file =
+            imageInput.files[0];
+
+
+        if (!file) {
+
+            showError(
+                "Please select an image first."
+            );
+
+            return;
+        }
+
+
+        // Reset
+
+        errorBox.style.display =
+            "none";
+
+        results.style.display =
+            "none";
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Analyzing...";
+
+        loading.style.display =
+            "block";
+
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "image",
+            file
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/detect",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Detection failed."
+                );
+
+            }
+
+
+            displayResults(data);
+
+
+        }
+
+        catch(error) {
+
+            console.error(error);
+
+            showError(
+                error.message
+            );
+
+        }
+
+        finally {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Detect Road Damage";
+
+            loading.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// DISPLAY RESULTS
+// ============================================================
+
+function displayResults(data) {
+
+
+    document.getElementById(
+        "total"
+    ).textContent =
+        data.total;
+
+
+    document.getElementById(
+        "types"
+    ).textContent =
+        data.types;
+
+
+    document.getElementById(
+        "avg"
+    ).textContent =
+        data.avg + "%";
+
+
+    // Images
+
+    document.getElementById(
+        "original-image"
+    ).src =
+        data.original_url +
+        "?t=" +
+        Date.now();
+
+
+    document.getElementById(
+        "result-image"
+    ).src =
+        data.result_url +
+        "?t=" +
+        Date.now();
+
+
+    // Detection list
+
+    const list =
+        document.getElementById(
+            "detection-list"
+        );
+
+
+    list.innerHTML = "";
+
+
+    if (
+        !data.detections ||
+        data.detections.length === 0
+    ) {
+
+        list.innerHTML = `
+
+            <div
+                style="
+                    grid-column:1/-1;
+                    padding:25px;
+                    text-align:center;
+                    color:#718096;
+                "
+            >
+
+                No road damage was detected
+                above the configured confidence
+                threshold.
+
+            </div>
+
+        `;
+
+    }
+
+
+    else {
+
+        data.detections.forEach(
+            function(detection) {
+
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "detection";
+
+
+                card.innerHTML = `
+
+                    <div class="detection-top">
+
+                        <span class="class-name">
+                            ${escapeHtml(
+                                detection.class_name
+                            )}
+                        </span>
+
+                        <span class="confidence">
+                            ${detection.confidence}%
+                        </span>
+
+                    </div>
+
+
+                    <div class="description">
+
+                        ${escapeHtml(
+                            detection.description
+                        )}
+
+                    </div>
+
+
+                    <div class="bar">
+
+                        <div
+                            class="bar-fill"
+                            style="
+                                width:${detection.confidence}%;
+                            "
+                        ></div>
+
+                    </div>
+
+                `;
+
+
+                list.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+
+    // Buttons
+
+    document.getElementById(
+        "download-btn"
+    ).href =
+        data.download_url;
+
+
+    document.getElementById(
+        "report-btn"
+    ).href =
+        data.report_url;
+
+
+    // Show results
+
+    results.style.display =
+        "block";
+
+
+    results.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ============================================================
+// ERROR
+// ============================================================
+
+function showError(message) {
+
+    errorBox.textContent =
+        "Error: " + message;
+
+    errorBox.style.display =
+        "block";
+
+}
+
+
+// ============================================================
+// BASIC HTML ESCAPING
+// ============================================================
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+</script>
+
+
+</body>
+
+</html>
