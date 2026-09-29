@@ -16,13 +16,7 @@ UPLOAD_FOLDER = BASE_DIR / "static" / "uploads"
 RESULT_FOLDER = BASE_DIR / "static" / "results"
 REPORT_FOLDER = BASE_DIR / "static" / "reports"
 
-MODEL_PATH = (
-    BASE_DIR
-    / "runs"
-    / "rdd2022_yolo"
-    / "weights"
-    / "best.pt"
-)
+MODEL_PATH = BASE_DIR / "models" / "best.pt"
 
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 RESULT_FOLDER.mkdir(parents=True, exist_ok=True)
